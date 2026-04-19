@@ -1,0 +1,2 @@
+name,unit,work_units,repeats,min_ns,median_ns,p99_ns,rate_min
+peak_fma,GFLOPS,2.56e+10,11,1.92816e+08,1.93876e+08,1.95067e+08,132.769

@@ -1,0 +1,4 @@
+name,unit,work_units,repeats,min_ns,median_ns,p99_ns,rate_min
+stream_triad,GB/s,8.05306e+08,11,6.60058e+06,6.74379e+06,7.04008e+06,122.005
+stream_triad,GB/s,8.05306e+08,11,6.11725e+06,6.15958e+06,6.29712e+06,131.645
+stream_triad,GB/s,8.05306e+08,11,6.10721e+06,6.18475e+06,6.50525e+06,131.862
