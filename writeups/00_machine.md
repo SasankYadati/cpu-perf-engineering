@@ -1,5 +1,22 @@
 # 00 - Machine Baseline (M4 Pro)
 
+## Context
+
+This is the first entry in a project where I optimize two computational
+kernels — SGEMM (single-precision matrix multiply) and prefix sum — from
+naive implementations to within 50% of hardware peak on my M4 Pro, single
+P-core, single thread.
+
+The goal is to develop performance discipline: measure, hypothesize
+about the bottleneck, apply one optimization, re-measure, and verify whether
+the hypothesis was right. This loop is the same whether you're optimizing a
+CPU kernel or debugging why a distributed training run is 30% slower than
+it should be.
+
+This writeup establishes the machine baseline with the three numbers that every
+future measurement gets compared against. Nothing gets optimized here; I just
+figure out what "100%" means on this hardware.
+
 ## Hardware
 - MacBook Pro, Apple M4 Pro, 48 GB LPDDR5X-8533
 - macOS 26.2 (Build 25C56)
@@ -81,7 +98,7 @@ Looking at the assembly showed that Clang unrolled the loop by 4x. So per iterat
 
 > `ldp` loads a pair of 128-bit vector registers in one instruction. That's 8 floats in total. `fmla.4s` is fused multiply accumulate on 4 floats at a time. Multiply and add happen in one instruction so it's both efficient and accurate (single rounding step). `stp` stores a pair of 128-bit registers to memory but reads from L2/DRAM first if not already in L1D cache. It modifies the cached copy and then marks dirty which is written to DRAM later when evicted.
 
-So yeah the kernel is memory-bound with tiny arithmetic intensity and the measured bandwidth of 131.86 GB/s will be used as the single-core DRAM ceiling.
+So the kernel is memory-bound with tiny arithmetic intensity and the measured bandwidth of 131.86 GB/s will be used as the single-core DRAM ceiling.
 
 ## Measurement 3: cache hierarchy (cache_sweep)
 **Hypothesis** - Sweeping a strided sum over buffer sizes from 16 KB to 256 MB should reveal three plateaus at L1, L2, and DRAM bandwidths. From the cliffs I should be able to read off cache sizes empirically.
@@ -135,7 +152,7 @@ There are two ceilings that define what's achievable:
 - Compute roof: 132.77 GFLOPS  (flat, at arithmetic intensity > 1.01 flops/byte)
 - Memory roof: 131.86 GB/s (slope, at arithmetic intensity < 1.01 flops/byte)
 
-The knee is unusally low compared to x86 machines because Apple Silicon has high single-core bandwidth relative to NEON compute so any kernel with more than 1 flop per byte of movement is compute-bound on this hardware.
+The knee is unusually low compared to x86 machines because Apple Silicon has high single-core bandwidth relative to NEON compute so any kernel with more than 1 flop per byte of movement is compute-bound on this hardware.
 
 ## What this means for our kernels
 

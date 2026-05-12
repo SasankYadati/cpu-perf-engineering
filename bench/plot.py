@@ -19,7 +19,7 @@ import pandas as pd
 
 # Fill these in from your step0 measurements.
 PEAK_GFLOPS = 132.77      # single P-core FP32 ceiling (measured)
-PEAK_BW_GBS = 122.01      # single-core sustained DRAM bandwidth (measured)
+PEAK_BW_GBS = 131.86      # single-core sustained DRAM bandwidth (measured)
 
 
 def speedup_chart(df: pd.DataFrame, out: Path) -> None:
