@@ -39,3 +39,19 @@
 
 # debug information files
 *.dwo
+*.dSYM/
+
+# This project's compiled binaries (no extension on Unix, so wildcards miss them)
+step0/peak_fma
+step0/stream
+step0/cache_sweep
+kernels/sgemm/sgemm
+
+# macOS Finder noise — matches in any directory
+.DS_Store
+
+# Python virtual environment
+.venv/
+
+# Instruments trace bundles (can be hundreds of MB)
+*.trace
